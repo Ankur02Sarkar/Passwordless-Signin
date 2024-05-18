@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { FaEnvelope, FaFacebook, FaInstagram, FaGooglePlusG, FaTwitter, FaCamera } from 'react-icons/fa';
+import { FaEnvelope, FaFacebook, FaInstagram, FaTwitter, FaCamera, FaYoutube } from 'react-icons/fa';
 import "@/styles/profilecard.css";
 
 const ProfileCard = () => {
@@ -17,32 +17,44 @@ const ProfileCard = () => {
     setIsModalVisible(false);
   };
 
+  const [userObj, setUserObj] = useState({
+    name: "Ankur Sarkar",
+    username: "itsaliataie",
+    email: "ankur02sarkar@gmail.com",
+    image: "https://i.pinimg.com/736x/96/91/28/9691288a3fadba6a8e6173d4eea20488.jpg",
+    bio: "An aspiring Frontend Developer working with CSS / JavaScript / React",
+    facebook: "https://www.facebook.com/Ank.Sar.02",
+    insta: "https://www.instagram.com/black_hat.hades/",
+    youtube: "https://youtube.com/@ankur02sarkar",
+    twitter: "https://twitter.com/ankur02sarkar",
+  })
+
   return (
     <div>
       {isModalVisible && (
         <div className="modal show">
-          <img src="https://i.pinimg.com/736x/96/91/28/9691288a3fadba6a8e6173d4eea20488.jpg" alt="Profile" />
+          <img src={userObj.image || ""} alt="Profile" />
           <div className="close" onClick={hide}></div>
         </div>
       )}
       <div className="container">
         <div className="card">
           <div className="header">
-            <a href="#" className="mail">
+            <a href={`mailto:${userObj.email}`} className="mail">
               <FaEnvelope />
             </a>
             <div className="main">
               <div
                 className={`image ${isHoverActive ? 'active' : ''}`}
-                style={{ backgroundImage: "url('https://i.pinimg.com/736x/96/91/28/9691288a3fadba6a8e6173d4eea20488.jpg')" }}
+                style={{ backgroundImage: `url('${userObj.image || ""}')` }}
                 onClick={show}
               >
                 <div className="hover">
                   <FaCamera className="fa-2x" />
                 </div>
               </div>
-              <h3 className="name">Ali Ataie</h3>
-              <h3 className="sub-name">@itsaliataie</h3>
+              <h3 className="name">{userObj.name || ""}</h3>
+              <h3 className="sub-name">@{userObj.username || ""}</h3>
             </div>
           </div>
           <div className="content">
@@ -50,20 +62,20 @@ const ProfileCard = () => {
               <div className="about-container">
                 <h3 className="title">About</h3>
                 <p className="text">
-                  An aspiring Frontend Developer working with CSS / JavaScript / React
+                  {userObj.bio || ""}
                 </p>
               </div>
               <div className="icons-container flex flex-row gap-2 justify-center">
-                <a href="#" className="icon">
+                <a href={userObj.facebook || "#"} target='_blank' className="icon">
                   <FaFacebook />
                 </a>
-                <a href="#" className="icon">
+                <a href={userObj.insta || "#"} target='_blank' className="icon">
                   <FaInstagram />
                 </a>
-                <a href="#" className="icon">
-                  <FaGooglePlusG />
+                <a href={userObj.youtube || "#"} target='_blank' className="icon">
+                  <FaYoutube />
                 </a>
-                <a href="#" className="icon">
+                <a href={userObj.twitter || "#"} target='_blank' className="icon">
                   <FaTwitter />
                 </a>
               </div>

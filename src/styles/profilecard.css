@@ -33,7 +33,7 @@ body {
   height: 270px;
   top: 0;
   left: 0;
-  background-image: linear-gradient(to top, #00f2fe, #4facfe);
+  background-image: linear-gradient(to top, #fce043, #fb7ba2);
   clip-path: circle(400px at 50% -48.5%);
 }
 
@@ -234,7 +234,7 @@ body {
 }
 
 .icon:hover {
-  color: #4facfe;
+  color: #fce043;
 }
 
 .buttons-wrap {
@@ -259,7 +259,7 @@ body {
 .follow {
   padding: 9.6px 0;
   width: 100%;
-  background: linear-gradient(to right, #4facfe 0%, #00f2fe 140%);
+  background: linear-gradient(to right, #fce043 0%, #fb7ba2 140%);
   color: #fff;
   text-align: center;
   text-decoration: none;
@@ -273,8 +273,8 @@ body {
 .share {
   padding: 7.6px 0;
   width: 100%;
-  border: 2px solid #4facfe;
-  color: #4facfe;
+  border: 2px solid #fce043;
+  color: #fce043;
   text-decoration: none;
   text-align: center;
   font-size: 0.7rem;
