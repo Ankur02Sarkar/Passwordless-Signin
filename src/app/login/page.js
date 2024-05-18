@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
 export default function AuthForm() {
@@ -15,11 +16,27 @@ export default function AuthForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
       e.preventDefault();
       if (!email || !password || email === "" || password === "") {
         toast.error("Please enter all Fields");
         return;
+      }
+      try {
+        const res = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (res.error) {
+          toast.error("Invalid Credentials");
+          return;
+        }
+        toast.success("Login Success");
+        router.push("/");
+      } catch (error) {
+        console.log(error);
       }
     };
 
