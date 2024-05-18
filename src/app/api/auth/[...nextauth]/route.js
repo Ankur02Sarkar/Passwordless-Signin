@@ -27,6 +27,7 @@ export const authOptions = {
             return null;
           }
 
+          console.log("user in routejs : ", user)
           return user;
         } catch (error) {
           console.log("Error: ", error);

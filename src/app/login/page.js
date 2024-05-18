@@ -1,8 +1,10 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
@@ -28,6 +30,7 @@ export default function AuthForm() {
           password,
           redirect: false,
         });
+        console.log("user in pagejs : ", res);
 
         if (res.error) {
           toast.error("Invalid Credentials");
@@ -111,9 +114,13 @@ export default function AuthForm() {
     );
   };
 
-  const RegisterForm = () => {
+  const RegisterForm = async () => {
+    const session = await getServerSession(authOptions)
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    if(session){
+      redirect("/")
+    }
 
     const handleRegistration = async (e) => {
       e.preventDefault();

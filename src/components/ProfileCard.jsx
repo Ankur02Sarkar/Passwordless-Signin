@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaEnvelope,
   FaFacebook,
@@ -9,11 +9,25 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import "@/styles/profilecard.css";
+import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 const ProfileCard = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isHoverActive, setIsHoverActive] = useState(false);
+  const session = null;
 
+  // const { data: session } = useSession();
+  useEffect(() => {
+    console.log("session : ", session);
+  }, []);
+
+  if (!session) {
+    redirect("/login");
+  }
   const show = () => {
     setIsHoverActive(true);
     setIsModalVisible(true);
