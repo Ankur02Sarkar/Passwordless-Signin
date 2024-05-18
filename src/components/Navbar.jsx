@@ -7,18 +7,7 @@ import { useState } from "react";
 export default function CustomNavbar() {
   const router = useRouter();
 
-  const [userObj, setUserObj] = useState({
-    name: "Ankur Sarkar",
-    username: "itsaliataie",
-    email: "ankur02sarkar@gmail.com",
-    image:
-      "https://i.pinimg.com/736x/96/91/28/9691288a3fadba6a8e6173d4eea20488.jpg",
-    bio: "An aspiring Frontend Developer working with CSS / JavaScript / React",
-    facebook: "https://www.facebook.com/Ank.Sar.02",
-    insta: "https://www.instagram.com/black_hat.hades/",
-    youtube: "https://youtube.com/@ankur02sarkar",
-    twitter: "https://twitter.com/ankur02sarkar",
-  });
+  const [userObj, setUserObj] = useState();
   return (
     <Navbar fluid rounded>
       <Navbar.Brand href="/">

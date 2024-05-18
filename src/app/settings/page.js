@@ -3,18 +3,7 @@
 import { useState } from "react";
 
 export default function SettingsPage() {
-  const [userObj, setUserObj] = useState({
-    name: "Ankur Sarkar",
-    username: "itsaliataie",
-    email: "ankur02sarkar@gmail.com",
-    image:
-      "https://i.pinimg.com/736x/96/91/28/9691288a3fadba6a8e6173d4eea20488.jpg",
-    bio: "An aspiring Frontend Developer working with CSS / JavaScript / React",
-    facebook: "https://www.facebook.com/Ank.Sar.02",
-    insta: "https://www.instagram.com/black_hat.hades/",
-    youtube: "https://youtube.com/@ankur02sarkar",
-    twitter: "https://twitter.com/ankur02sarkar",
-  });
+  const [userObj, setUserObj] = useState();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,7 +31,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="name"
-              value={userObj.name}
+              value={userObj?.name}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -55,7 +44,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="username"
-              value={userObj.username}
+              value={userObj?.username}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -68,7 +57,7 @@ export default function SettingsPage() {
             <input
               type="email"
               name="email"
-              value={userObj.email}
+              value={userObj?.email}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -81,7 +70,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="image"
-              value={userObj.image}
+              value={userObj?.image}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -93,7 +82,7 @@ export default function SettingsPage() {
             </label>
             <textarea
               name="bio"
-              value={userObj.bio}
+              value={userObj?.bio}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             ></textarea>
@@ -106,7 +95,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="facebook"
-              value={userObj.facebook}
+              value={userObj?.facebook}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -119,7 +108,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="insta"
-              value={userObj.insta}
+              value={userObj?.insta}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -132,7 +121,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="youtube"
-              value={userObj.youtube}
+              value={userObj?.youtube}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -145,7 +134,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="twitter"
-              value={userObj.twitter}
+              value={userObj?.twitter}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />

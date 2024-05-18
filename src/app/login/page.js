@@ -1,23 +1,38 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
+  const router = useRouter();
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
   };
 
   const LoginForm = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleLogin = (e) => {
+      e.preventDefault();
+      if (!email || !password || email === "" || password === "") {
+        toast.error("Please enter all Fields");
+        return;
+      }
+    };
+
     return (
       <div>
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-        <form className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Email
             </label>
             <input
+              onChange={(e) => setEmail(e.target.value)}
               type="email"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -28,6 +43,7 @@ export default function AuthForm() {
               Password
             </label>
             <input
+              onChange={(e) => setPassword(e.target.value)}
               type="password"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -79,35 +95,67 @@ export default function AuthForm() {
   };
 
   const RegisterForm = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleRegistration = async (e) => {
+      e.preventDefault();
+      if (!email || !password || email === "" || password === "") {
+        toast.error("Please enter all Fields");
+        return;
+      }
+      try {
+        const resUserExists = await fetch("api/userExists", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        const { user } = await resUserExists.json();
+
+        if (user) {
+          toast.error("User already exists");
+          return;
+        }
+
+        const res = await fetch("api/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        });
+
+        if (res.ok) {
+          const form = e.target;
+          toast.success("User Registered");
+          console.log("res : ", res);
+          form.reset();
+          router.push("/");
+        } else {
+          toast.error("User registration failed");
+        }
+      } catch (error) {
+        toast.error("Error during registration");
+        console.log("Error during registration : ", error);
+      }
+    };
+
     return (
       <div>
         <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
-        <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
-            <input
-              type="text"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Username
-            </label>
-            <input
-              type="text"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-
+        <form onSubmit={handleRegistration} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Email
             </label>
             <input
+              onChange={(e) => setEmail(e.target.value)}
               type="email"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -118,6 +166,7 @@ export default function AuthForm() {
               Password
             </label>
             <input
+              onChange={(e) => setPassword(e.target.value)}
               type="password"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
