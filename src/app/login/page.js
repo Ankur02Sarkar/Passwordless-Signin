@@ -1,119 +1,157 @@
 "use client";
-import React, { useState } from "react";
-import { FaGoogle } from "react-icons/fa";
-import "./login.css";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-const Login = () => {
-  const [isActive, setIsActive] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter();
+import { useState } from "react";
+
+export default function AuthForm() {
+  const [isLogin, setIsLogin] = useState(true);
+
+  const toggleForm = () => {
+    setIsLogin(!isLogin);
+  };
+
+  const LoginForm = () => {
+    return (
+      <div>
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <form className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              type="email"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <input
+              type="password"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+
+          <div className="flex justify-between items-center">
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label className="ml-2 block text-sm text-gray-900">
+                Remember me
+              </label>
+            </div>
+
+            <div className="text-sm">
+              <a
+                href="#"
+                className="font-medium text-indigo-600 hover:text-indigo-500"
+              >
+                Forgot your password?
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Sign in
+            </button>
+          </div>
+        </form>
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            Don't have an account?{" "}
+            <button
+              onClick={toggleForm}
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
+              Create new account
+            </button>
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const RegisterForm = () => {
+    return (
+      <div>
+        <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
+        <form className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Name
+            </label>
+            <input
+              type="text"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Username
+            </label>
+            <input
+              type="text"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              type="email"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <input
+              type="password"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Register
+            </button>
+          </div>
+        </form>
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            Already have an account?{" "}
+            <button
+              onClick={toggleForm}
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
+              Sign in
+            </button>
+          </p>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div className={`container ${isActive ? "active" : ""}`} id="container">
-      <div className="form-container sign-up">
-        <div className="formDiv">
-          <h1 className="text-gray-500">Create Account</h1>
-          <div className="social-icons flex flex-row gap-4 text-gray-500">
-            <Button
-              onClick={() => {}}
-              className="hover:text-[#512da8] hover:border hover:border-[#512da8] flex flex-row gap-2"
-            >
-              <span>Continue With Google</span>
-              <FaGoogle size={27} />
-            </Button>
-          </div>
-          <span className="text-gray-500">
-            or use your email for registration
-          </span>
-          <input
-            type="email"
-            required
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            required
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button onClick={() => {}} disabled={isDisabled}>
-            Sign Up
-          </button>
-        </div>
-      </div>
-      <div className="form-container sign-in">
-        <div className="formDiv">
-          <h1 className="text-gray-500">Sign In</h1>
-          <div className="social-icons flex flex-row gap-4 text-gray-500">
-            <Button
-              onClick={() => {}}
-              className="hover:text-[#512da8] hover:border hover:border-[#512da8] flex flex-row gap-2"
-            >
-              <span>Continue With Google</span>
-              <FaGoogle size={27} />
-            </Button>
-          </div>
-          <span className="text-gray-500">or use your email password</span>
-          <input
-            type="email"
-            required
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            required
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {/* <a href="#">Forget Your Password?</a> */}
-          <button onClick={() => {}}>Sign In</button>
-        </div>
-      </div>
-      <div className="toggle-container">
-        <div className="toggle">
-          <div className="toggle-panel toggle-left">
-            <h1>Welcome Back!</h1>
-            <p>Enter your personal details to use all of site features</p>
-            <button
-              className="hiddenn"
-              id="login"
-              onClick={(e) => {
-                e.preventDefault();
-                setIsActive(false);
-              }}
-            >
-              Sign In
-            </button>
-          </div>
-          <div className="toggle-panel toggle-right">
-            <h1>Hello, Friend!</h1>
-            <p>
-              Register with your personal details to use all of site features
-            </p>
-            <button
-              className="hiddenn"
-              id="register"
-              onClick={(e) => {
-                e.preventDefault();
-                setIsActive(true);
-              }}
-            >
-              Sign Up
-            </button>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
+        {isLogin ? <LoginForm /> : <RegisterForm />}
       </div>
     </div>
   );
-};
-
-export default Login;
+}
