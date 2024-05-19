@@ -30,7 +30,6 @@ export async function PATCH(req) {
       },
       { new: true } // Return the updated document
     );
-    console.log("updatedUser : ", updatedUser);
     return NextResponse.json(updatedUser);
   } catch (error) {
     console.log(error);

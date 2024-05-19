@@ -13,7 +13,7 @@ export async function POST(req) {
       password: hashedPassword,
       name: "",
       username: "",
-      image: "",
+      image: "https://i.pinimg.com/736x/96/91/28/9691288a3fadba6a8e6173d4eea20488.jpg",
       bio: "",
       facebook: "",
       insta: "",

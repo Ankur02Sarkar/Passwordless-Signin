@@ -50,10 +50,8 @@ export default function SettingsPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("User data saved:", userObj);
     try {
       const updatedUser = await updateUser(userObj);
-      console.log("User updated successfully:", updatedUser);
       localStorage.setItem("userObj", JSON.stringify(updatedUser));
       toast.success("User updated successfully");
     } catch (error) {

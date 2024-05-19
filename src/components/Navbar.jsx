@@ -1,13 +1,24 @@
 "use client";
-
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 export default function CustomNavbar() {
   const router = useRouter();
-
   const [userObj, setUserObj] = useState();
+
+  useEffect(() => {
+    const session = localStorage.getItem("userObj");
+    setUserObj(JSON.parse(session));
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("userObj");
+    toast.success("User Logged Out");
+    router.refresh();
+  };
+
   return (
     <Navbar fluid rounded>
       <Navbar.Brand href="/">
@@ -20,14 +31,7 @@ export default function CustomNavbar() {
           arrowIcon={false}
           inline
           label={
-            <Avatar
-              alt="User settings"
-              img={
-                userObj?.image ||
-                "https://i.pinimg.com/736x/96/91/28/9691288a3fadba6a8e6173d4eea20488.jpg"
-              }
-              rounded
-            />
+            <Avatar alt="User settings" img={userObj?.image || ""} rounded />
           }
         >
           <Dropdown.Header>
@@ -48,7 +52,7 @@ export default function CustomNavbar() {
             Login
           </Dropdown.Item>
           <Dropdown.Divider />
-          <Dropdown.Item>Sign out</Dropdown.Item>
+          <Dropdown.Item onClick={handleLogout}>Sign out</Dropdown.Item>
         </Dropdown>
       </div>
     </Navbar>

@@ -39,13 +39,7 @@ const ProfileCard = () => {
     <div>
       {isModalVisible && (
         <div className="modal show">
-          <img
-            src={
-              userObj?.image ||
-              "https://i.pinimg.com/736x/96/91/28/9691288a3fadba6a8e6173d4eea20488.jpg"
-            }
-            alt="Profile"
-          />
+          <img src={userObj?.image || ""} alt="Profile" />
           <div className="close" onClick={hide}></div>
         </div>
       )}
@@ -62,10 +56,7 @@ const ProfileCard = () => {
               <div
                 className={`image ${isHoverActive ? "active" : ""}`}
                 style={{
-                  backgroundImage: `url('${
-                    userObj?.image ||
-                    "https://i.pinimg.com/736x/96/91/28/9691288a3fadba6a8e6173d4eea20488.jpg"
-                  }')`,
+                  backgroundImage: `url('${userObj?.image || ""}')`,
                 }}
                 onClick={show}
               >
