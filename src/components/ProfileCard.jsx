@@ -25,10 +25,6 @@ const ProfileCard = () => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log("userObj : ", userObj);
-  }, [userObj]);
-
   const show = () => {
     setIsHoverActive(true);
     setIsModalVisible(true);
@@ -82,7 +78,7 @@ const ProfileCard = () => {
             </div>
           </div>
           <div className="content">
-            <div className="left">
+            <div className="left w-full">
               <div className="about-container">
                 <h3 className="title">About</h3>
                 <p className="text">

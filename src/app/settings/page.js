@@ -1,22 +1,22 @@
 "use client";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function SettingsPage() {
-  const [userObjMain, setUserObjMain] = useState();
+  const [userObjMain, setUserObjMain] = useState(null);
   const [userObj, setUserObj] = useState();
 
   useEffect(() => {
     const session = localStorage.getItem("userObj");
     if (session) {
-      setUserObjMain(JSON.parse(session));
+      const parsedSession = JSON.parse(session);
+      setUserObjMain(parsedSession);
+      setUserObj(parsedSession);
     } else {
       redirect("/login");
     }
   }, []);
-
-  useEffect(() => {
-    console.log("userObjMain : ", userObjMain);
-  }, [userObjMain]);
 
   async function updateUser(userData) {
     try {
@@ -54,6 +54,8 @@ export default function SettingsPage() {
     try {
       const updatedUser = await updateUser(userObj);
       console.log("User updated successfully:", updatedUser);
+      localStorage.setItem("userObj", JSON.stringify(updatedUser));
+      toast.success("User updated successfully");
     } catch (error) {
       console.error("Error updating user:", error);
     }
@@ -71,7 +73,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="name"
-              value={userObjMain?.name}
+              value={userObj?.name}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -84,7 +86,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="username"
-              value={userObjMain?.username}
+              value={userObj?.username}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -97,7 +99,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="image"
-              value={userObjMain?.image}
+              value={userObj?.image}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -109,7 +111,7 @@ export default function SettingsPage() {
             </label>
             <textarea
               name="bio"
-              value={userObjMain?.bio}
+              value={userObj?.bio}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             ></textarea>
@@ -122,7 +124,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="facebook"
-              value={userObjMain?.facebook}
+              value={userObj?.facebook}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -135,7 +137,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="insta"
-              value={userObjMain?.insta}
+              value={userObj?.insta}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -148,7 +150,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="youtube"
-              value={userObjMain?.youtube}
+              value={userObj?.youtube}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -161,7 +163,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="twitter"
-              value={userObjMain?.twitter}
+              value={userObj?.twitter}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
