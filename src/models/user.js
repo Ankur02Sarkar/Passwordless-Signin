@@ -44,6 +44,10 @@ const userSchema = new Schema(
       type: String,
       required: false,
     },
+    passkeys: {
+      type: [String], // Array of strings
+      required: false,
+    },
   },
   { timestamps: true }
 );

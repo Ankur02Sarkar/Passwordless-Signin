@@ -13,12 +13,14 @@ export async function POST(req) {
       password: hashedPassword,
       name: "",
       username: "",
-      image: "https://i.pinimg.com/736x/96/91/28/9691288a3fadba6a8e6173d4eea20488.jpg",
+      image:
+        "https://i.pinimg.com/736x/96/91/28/9691288a3fadba6a8e6173d4eea20488.jpg",
       bio: "",
       facebook: "",
       insta: "",
       youtube: "",
       twitter: "",
+      passkeys: [],
     });
 
     return NextResponse.json({ message: "User registered." }, { status: 201 });
