@@ -1,9 +1,44 @@
 "use client";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function SettingsPage() {
+  const [userObjMain, setUserObjMain] = useState();
   const [userObj, setUserObj] = useState();
+
+  useEffect(() => {
+    const session = localStorage.getItem("userObj");
+    if (session) {
+      setUserObjMain(JSON.parse(session));
+    } else {
+      redirect("/login");
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("userObjMain : ", userObjMain);
+  }, [userObjMain]);
+
+  async function updateUser(userData) {
+    try {
+      const response = await fetch("/api/updateUser", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...userData, email: userObjMain.email }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update user");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error updating user:", error);
+      throw error;
+    }
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -13,10 +48,15 @@ export default function SettingsPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle the form submission logic here (e.g., send data to the server)
     console.log("User data saved:", userObj);
+    try {
+      const updatedUser = await updateUser(userObj);
+      console.log("User updated successfully:", updatedUser);
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
   };
 
   return (
@@ -31,7 +71,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="name"
-              value={userObj?.name}
+              value={userObjMain?.name}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -44,20 +84,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="username"
-              value={userObj?.username}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={userObj?.email}
+              value={userObjMain?.username}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -70,7 +97,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="image"
-              value={userObj?.image}
+              value={userObjMain?.image}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -82,7 +109,7 @@ export default function SettingsPage() {
             </label>
             <textarea
               name="bio"
-              value={userObj?.bio}
+              value={userObjMain?.bio}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             ></textarea>
@@ -95,7 +122,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="facebook"
-              value={userObj?.facebook}
+              value={userObjMain?.facebook}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -108,7 +135,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="insta"
-              value={userObj?.insta}
+              value={userObjMain?.insta}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -121,7 +148,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="youtube"
-              value={userObj?.youtube}
+              value={userObjMain?.youtube}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -134,7 +161,7 @@ export default function SettingsPage() {
             <input
               type="text"
               name="twitter"
-              value={userObj?.twitter}
+              value={userObjMain?.twitter}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />

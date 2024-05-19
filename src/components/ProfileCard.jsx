@@ -25,6 +25,10 @@ const ProfileCard = () => {
     }
   }, []);
 
+  useEffect(() => {
+    console.log("userObj : ", userObj);
+  }, [userObj]);
+
   const show = () => {
     setIsHoverActive(true);
     setIsModalVisible(true);

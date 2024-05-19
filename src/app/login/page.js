@@ -195,6 +195,7 @@ export default function AuthForm() {
         });
 
         const { user } = await resUserExists.json();
+        console.log("user from userexist : ", user);
         localStorage.setItem("userObj", JSON.stringify(user));
       } catch (error) {
         console.log(error);
