@@ -1,7 +1,7 @@
 "use client";
 import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
@@ -17,6 +17,7 @@ export default function AuthForm() {
   const LoginForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { data } = useSession();
 
     const handleLogin = async (e) => {
       e.preventDefault();
@@ -30,14 +31,31 @@ export default function AuthForm() {
           password,
           redirect: false,
         });
-        console.log("user in pagejs : ", res);
 
         if (res.error) {
           toast.error("Invalid Credentials");
           return;
         }
         toast.success("Login Success");
+        await saveUserToLocalStorage();
         router.push("/");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const saveUserToLocalStorage = async () => {
+      try {
+        const resUserExists = await fetch("api/userExists", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        const { user } = await resUserExists.json();
+        localStorage.setItem("userObj", JSON.stringify(user));
       } catch (error) {
         console.log(error);
       }
@@ -114,13 +132,9 @@ export default function AuthForm() {
     );
   };
 
-  const RegisterForm = async () => {
-    const session = await getServerSession(authOptions)
+  const RegisterForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    if(session){
-      redirect("/")
-    }
 
     const handleRegistration = async (e) => {
       e.preventDefault();
@@ -158,7 +172,7 @@ export default function AuthForm() {
         if (res.ok) {
           const form = e.target;
           toast.success("User Registered");
-          console.log("res : ", res);
+          await saveUserToLocalStorage();
           form.reset();
           router.push("/");
         } else {
@@ -167,6 +181,23 @@ export default function AuthForm() {
       } catch (error) {
         toast.error("Error during registration");
         console.log("Error during registration : ", error);
+      }
+    };
+
+    const saveUserToLocalStorage = async () => {
+      try {
+        const resUserExists = await fetch("api/userExists", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        const { user } = await resUserExists.json();
+        localStorage.setItem("userObj", JSON.stringify(user));
+      } catch (error) {
+        console.log(error);
       }
     };
 
