@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import { generateRegistrationOptions } from "@simplewebauthn/server";
 
 export async function POST(req) {

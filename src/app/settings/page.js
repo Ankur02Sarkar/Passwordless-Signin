@@ -1,5 +1,5 @@
 "use client";
-import { client } from "@passwordless-id/webauthn";
+import { startRegistration } from "@simplewebauthn/browser";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -69,12 +69,33 @@ export default function SettingsPage() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to update user");
+        throw new Error("Failed to Register Passkey");
       }
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error updating user:", error);
+      console.error("Error Registering Passkey :", error);
+      throw error;
+    }
+  }
+
+  async function verifyPasskey(cred, challenge) {
+    try {
+      const response = await fetch("/api/register-verify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cred, challenge }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to Verify Passkey");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error verifying passkey :", error);
       throw error;
     }
   }
@@ -84,18 +105,10 @@ export default function SettingsPage() {
     try {
       const challengeRes = await registerPasskey();
       const { options } = challengeRes;
-      const challenge = options.challenge;
-      console.log("challenge : ", challenge);
-      const registration = await client.register("User", challenge, {
-        authenticatorType: "auto",
-        userVerification: "required",
-        timeout: 60000,
-        attestation: true,
-        userHandle:
-          "Optional server-side user id.",
-        debug: true,
-      });
+      const registration = await startRegistration({ ...options });
       console.log("registration : ", registration);
+      const verifyRes = await verifyPasskey(registration, options.challenge);
+      console.log("verifyRes : ", verifyRes);
       toast.success("Passkey Registered Succesfully");
     } catch (error) {
       console.error("Error Registering Passkey:", error);
