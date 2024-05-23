@@ -4,16 +4,16 @@ import { generateRegistrationOptions } from "@simplewebauthn/server";
 
 export async function POST(req) {
   try {
-    const { email, username } = await req.json();
+    const { userObj } = await req.json();
+    const rpID = "localhost";
+    const userName = userObj?.username;
     const challengePayload = await generateRegistrationOptions({
-      rpID: process.env.RPID,
+      rpID,
       rpName: "My Localhost Machine",
       attestationType: "none",
-      userName: username,
+      userName,
       timeout: 30_000,
     });
-
-    console.log("challengePayload : ", challengePayload.challenge);
 
     return NextResponse.json({ options: challengePayload }, { status: 201 });
   } catch (error) {

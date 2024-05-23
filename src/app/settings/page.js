@@ -1,17 +1,16 @@
 "use client";
+import { client } from "@passwordless-id/webauthn";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function SettingsPage() {
-  const [userObjMain, setUserObjMain] = useState(null);
   const [userObj, setUserObj] = useState();
 
   useEffect(() => {
     const session = localStorage.getItem("userObj");
     if (session) {
       const parsedSession = JSON.parse(session);
-      setUserObjMain(parsedSession);
       setUserObj(parsedSession);
     } else {
       redirect("/login");
@@ -25,7 +24,7 @@ export default function SettingsPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...userData, email: userObjMain.email }),
+        body: JSON.stringify({ ...userData, email: userObj.email }),
       });
 
       if (!response.ok) {
@@ -59,6 +58,50 @@ export default function SettingsPage() {
     }
   };
 
+  async function registerPasskey() {
+    try {
+      const response = await fetch("/api/register-challenge", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userObj }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update user");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error updating user:", error);
+      throw error;
+    }
+  }
+
+  const handleRegisterPasskey = async (e) => {
+    e.preventDefault();
+    try {
+      const challengeRes = await registerPasskey();
+      const { options } = challengeRes;
+      const challenge = options.challenge;
+      console.log("challenge : ", challenge);
+      const registration = await client.register("User", challenge, {
+        authenticatorType: "auto",
+        userVerification: "required",
+        timeout: 60000,
+        attestation: true,
+        userHandle:
+          "Optional server-side user id.",
+        debug: true,
+      });
+      console.log("registration : ", registration);
+      toast.success("Passkey Registered Succesfully");
+    } catch (error) {
+      console.error("Error Registering Passkey:", error);
+    }
+  };
+
   const renderInputField = (label, name, type = "text") => (
     <div>
       <label className="block text-sm font-medium text-gray-700">{label}</label>
@@ -88,6 +131,7 @@ export default function SettingsPage() {
         <div>
           <button
             type="button"
+            onClick={handleRegisterPasskey}
             className="w-full flex justify-center py-2 px-4 -mt-2 mb-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Register Passkey
