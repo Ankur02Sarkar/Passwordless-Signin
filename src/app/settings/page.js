@@ -100,6 +100,28 @@ export default function SettingsPage() {
     }
   }
 
+  async function updatePasskey(regPasskey) {
+    try {
+      const response = await fetch("/api/save-passkey", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: userObj.email, regPasskey }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update Passkey");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error updating Passkey:", error);
+      throw error;
+    }
+  }
+
   const handleRegisterPasskey = async (e) => {
     e.preventDefault();
     try {
@@ -109,6 +131,7 @@ export default function SettingsPage() {
       console.log("registration : ", registration);
       const verifyRes = await verifyPasskey(registration, options.challenge);
       console.log("verifyRes : ", verifyRes);
+      await updatePasskey(verifyRes.registrationInfo);
       toast.success("Passkey Registered Succesfully");
     } catch (error) {
       console.error("Error Registering Passkey:", error);

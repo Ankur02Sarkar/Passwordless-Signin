@@ -45,7 +45,7 @@ const userSchema = new Schema(
       required: false,
     },
     passkeys: {
-      type: [String], // Array of strings
+      type: [], // Array of strings
       required: false,
     },
   },

@@ -18,7 +18,7 @@ export async function POST(req) {
     // Store Passkey to DB
     // verifyResp.registrationInfo
 
-    return NextResponse.json({ verified: true }, { status: 201 });
+    return NextResponse.json({ ...verifyResp }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
       { message: "An error occurred while Verifying the Passkey." },

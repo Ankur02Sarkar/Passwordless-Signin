@@ -5,6 +5,7 @@ import { signIn, useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
+import { startAuthentication } from "@simplewebauthn/browser";
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
@@ -61,6 +62,66 @@ export default function AuthForm() {
       }
     };
 
+    async function startLoginChallenge(userId) {
+      try {
+        const response = await fetch("/api/login-challenge", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to Create Login Challenge");
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Error verifying passkey :", error);
+        throw error;
+      }
+    }
+
+    async function verifyLoginChallenge(userObj, challenge, cred) {
+      try {
+        const response = await fetch("/api/login-verify", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userObj, challenge, cred }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to Verify Login Challenge");
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Error verifying passkey :", error);
+        throw error;
+      }
+    }
+
+    const handleOneTapSignin = async (e) => {
+      console.log("handleOneTapSignin");
+      e.preventDefault();
+      const session = localStorage.getItem("userObj");
+      if (session) {
+        const parsedSession = JSON.parse(session);
+        try {
+          const challengeRes = await startLoginChallenge(parsedSession?._id);
+          const { options } = challengeRes;
+          const authRes = await startAuthentication(options);
+          console.log("authRes : ", authRes);
+          toast.success("Signed In Succesfully");
+        } catch (error) {
+          console.error("Error Signin in:", error);
+        }
+      }
+    };
+
     return (
       <div>
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
@@ -106,15 +167,16 @@ export default function AuthForm() {
               Sign in
             </button>
           </div>
-          <div>
-            <button
-              type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              One Tap Sign in
-            </button>
-          </div>
         </form>
+        <div>
+          <button
+            type="button"
+            onClick={handleOneTapSignin}
+            className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            One Tap Sign in
+          </button>
+        </div>
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Don&apos;t have an account?{" "}
@@ -166,6 +228,8 @@ export default function AuthForm() {
             password,
           }),
         });
+
+        console.log("res : ", res);
 
         if (res.ok) {
           const form = e.target;
