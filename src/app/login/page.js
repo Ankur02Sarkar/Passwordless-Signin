@@ -62,14 +62,13 @@ export default function AuthForm() {
       }
     };
 
-    async function startLoginChallenge(userId) {
+    async function startLoginChallenge() {
       try {
         const response = await fetch("/api/login-challenge", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ userId }),
         });
 
         if (!response.ok) {
@@ -78,47 +77,56 @@ export default function AuthForm() {
         const data = await response.json();
         return data;
       } catch (error) {
-        console.error("Error verifying passkey :", error);
+        console.error("Error Creating Login Challenge :", error);
         throw error;
       }
     }
 
-    async function verifyLoginChallenge(userObj, challenge, cred) {
-      try {
-        const response = await fetch("/api/login-verify", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userObj, challenge, cred }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to Verify Login Challenge");
+    async function verifyLoginChallenge(challenge, cred) {
+      const session = localStorage.getItem("userObj");
+      if (session) {
+        const parsedSession = JSON.parse(session);
+        if (!parsedSession.passkeys || parsedSession.passkeys.length === 0) {
+          console.error("No passkeys found in session");
+          throw new Error("No passkeys found in session. Please log in again.");
         }
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        console.error("Error verifying passkey :", error);
-        throw error;
+        try {
+          const response = await fetch("/api/login-verify", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              passkey: parsedSession.passkeys[0],
+              challenge,
+              cred,
+            }),
+          });
+          if (!response.ok) {
+            throw new Error("Failed to Verify Login Challenge");
+          }
+          const data = await response.json();
+          return data;
+        } catch (error) {
+          console.error("Error verifying passkey :", error);
+          throw error;
+        }
       }
     }
 
     const handleOneTapSignin = async (e) => {
       console.log("handleOneTapSignin");
       e.preventDefault();
-      const session = localStorage.getItem("userObj");
-      if (session) {
-        const parsedSession = JSON.parse(session);
-        try {
-          const challengeRes = await startLoginChallenge(parsedSession?._id);
-          const { options } = challengeRes;
-          const authRes = await startAuthentication(options);
-          console.log("authRes : ", authRes);
-          toast.success("Signed In Succesfully");
-        } catch (error) {
-          console.error("Error Signin in:", error);
-        }
+      try {
+        const challengeRes = await startLoginChallenge();
+        const { options } = challengeRes;
+        const authRes = await startAuthentication(options);
+        console.log("authRes : ", authRes);
+        const verifyRes = await verifyLoginChallenge(options.challenge, authRes);
+        console.log("verifyRes : ", verifyRes);
+        toast.success("Signed In Succesfully");
+      } catch (error) {
+        console.error("Error Signin in:", error);
       }
     };
 

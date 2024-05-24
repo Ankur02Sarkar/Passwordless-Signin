@@ -3,14 +3,14 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
-    const {userObj, challenge, cred } = await req.json();
+    const { passkey, challenge, cred } = await req.json();
 
     const result = await verifyAuthenticationResponse({
       expectedChallenge: challenge,
       expectedOrigin: "http://localhost:3000",
       expectedRPID: "localhost",
       response: cred,
-      authenticator: userObj.passkey,
+      authenticator: passkey,
     });
 
     if (!result.verified) return res.json({ error: "something went wrong" });

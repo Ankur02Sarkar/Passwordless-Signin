@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
-    const { userId } = await req.json();
     const rpID = "localhost";
     const opts = await generateAuthenticationOptions({ rpID });
 
