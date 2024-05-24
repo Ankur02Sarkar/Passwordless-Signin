@@ -131,7 +131,8 @@ export default function SettingsPage() {
       console.log("registration : ", registration);
       const verifyRes = await verifyPasskey(registration, options.challenge);
       console.log("verifyRes : ", verifyRes);
-      await updatePasskey(verifyRes.registrationInfo);
+      const passkeyRes = await updatePasskey(verifyRes.registrationInfo);
+      localStorage.setItem("userObj", JSON.stringify(passkeyRes));
       toast.success("Passkey Registered Succesfully");
     } catch (error) {
       console.error("Error Registering Passkey:", error);

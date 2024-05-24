@@ -9,7 +9,7 @@ export async function PATCH(req) {
     const updatedUser = await User.findOneAndUpdate(
       { email },
       {
-        passkey: regPasskey,
+        passkeys: [regPasskey],
       },
       { new: true } // Return the updated document
     );
