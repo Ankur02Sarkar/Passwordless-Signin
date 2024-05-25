@@ -3,8 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
-    const { passkey, challenge, cred } = await req.json();
-
+    const { userEmail, passkey, challenge, cred } = await req.json();
     const result = await verifyAuthenticationResponse({
       expectedChallenge: challenge,
       expectedOrigin: "http://localhost:3000",

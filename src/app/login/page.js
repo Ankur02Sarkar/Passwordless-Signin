@@ -7,6 +7,19 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { startAuthentication } from "@simplewebauthn/browser";
 
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
   const router = useRouter();
@@ -17,6 +30,7 @@ export default function AuthForm() {
 
   const LoginForm = () => {
     const [email, setEmail] = useState("");
+    const [passkeyEmail, setPasskeyEmail] = useState("");
     const [password, setPassword] = useState("");
     const { data } = useSession();
 
@@ -82,7 +96,7 @@ export default function AuthForm() {
       }
     }
 
-    async function verifyLoginChallenge(challenge, cred) {
+    async function verifyLoginChallenge(userEmail, challenge, cred) {
       const session = localStorage.getItem("userObj");
       if (session) {
         const parsedSession = JSON.parse(session);
@@ -91,12 +105,17 @@ export default function AuthForm() {
           throw new Error("No passkeys found in session. Please log in again.");
         }
         try {
+          console.log("userEmail : ", userEmail);
+          console.log("passkey : ", parsedSession.passkeys[0]);
+          console.log("challenge : ", challenge);
+          console.log("cred : ", cred);
           const response = await fetch("/api/login-verify", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
+              userEmail,
               passkey: parsedSession.passkeys[0],
               challenge,
               cred,
@@ -115,14 +134,21 @@ export default function AuthForm() {
     }
 
     const handleOneTapSignin = async (e) => {
-      console.log("handleOneTapSignin");
-      e.preventDefault();
+      // e.preventDefault();
+      if (!passkeyEmail) {
+        toast.error("Please enter Your Email");
+        return;
+      }
       try {
         const challengeRes = await startLoginChallenge();
         const { options } = challengeRes;
         const authRes = await startAuthentication(options);
         console.log("authRes : ", authRes);
-        const verifyRes = await verifyLoginChallenge(options.challenge, authRes);
+        const verifyRes = await verifyLoginChallenge(
+          passkeyEmail,
+          options.challenge,
+          authRes
+        );
         console.log("verifyRes : ", verifyRes);
         toast.success("Signed In Succesfully");
       } catch (error) {
@@ -177,13 +203,39 @@ export default function AuthForm() {
           </div>
         </form>
         <div>
-          <button
-            type="button"
-            onClick={handleOneTapSignin}
-            className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            One Tap Sign in
-          </button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                variant="outline"
+              >
+                One Tap Sign in
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Enter Email</DialogTitle>
+                <DialogDescription>
+                  Enter your Email and Login using your Passkey
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid items-center gap-4">
+                  <Input
+                    id="email"
+                    placeholder="Enter Email"
+                    onChange={(e) => setPasskeyEmail(e.target.value)}
+                    className="col-span-3"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit" onClick={handleOneTapSignin}>
+                  Continue
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
